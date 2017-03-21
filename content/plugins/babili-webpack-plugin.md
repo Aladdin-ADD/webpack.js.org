@@ -103,3 +103,7 @@ module.exports = {
 
 [quality]: https://www.bithound.io/github/webpack-contrib/babili-webpack-plugin/badges/score.svg
 [quality-url]: https://www.bithound.io/github/webpack-contrib/babili-webpack-plugin
+
+***
+
+> 原文：https://webpack.js.org/plugins/babili-webpack-plugin/

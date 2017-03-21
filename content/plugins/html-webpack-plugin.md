@@ -55,3 +55,7 @@ var webpackConfig = {
 ## 第三方插件
 
 这个插件支持第三方插件。详细列表参阅[文档](https://github.com/ampedandwired/html-webpack-plugin#third-party-addons)。
+
+***
+
+> 原文：https://webpack.js.org/plugins/html-webpack-plugin/
