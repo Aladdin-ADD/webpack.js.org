@@ -170,30 +170,25 @@ webpack插件可以按照它所注册的事件分成不同的类型。每一个�
 
 `applyPluginsBailResult(name: string, args: any...)`
 
-This means that each of the plugin callbacks will be invoked one after the other with the specific `args`.
-This is the simplest format for a plugin. Many useful events like `"compile"`, `"this-compilation"` expect plugins to have synchronous execution.
+这意味着，每个插件的回调函数都会以对应的`args`作为参数被依次调用。这是最简单的一种形式。许多有用的事件，比如`"compile"`, `"this-compilation"`，都需要同步执行插件。
 
 - __waterfall__ Plugins applied using
 
 `applyPluginsWaterfall(name: string, init: any, args: any...)`
+每个插件依次被调用，其参数是上一个插件的返回值。这种插件必须要考虑它的执行顺序。它接收上一个插件的执行结果作为参数，第一个插件的参数为`init`。它用于与`webpack`模板相关的 Tapable 实例，比如 `ModuleTemplate`、`ChunkTemplate`。
 
-Here each of the plugins are called one after the other with the args from the return value of the previous plugin. The plugin must take into consider the order of its execution.
-It must accept arguments from the previous plugin that was executed. The value for the first plugin is `init`. This pattern is used in the Tapable instances which are related to the `webpack` templates like `ModuleTemplate`, `ChunkTemplate` etc.
-
-- __asynchronous__ When all the plugins are applied asynchronously using
+- __异步__ When all the plugins are applied asynchronously using
 
 `applyPluginsAsync(name: string, args: any..., callback: (err?: Error) -> void)`
 
-The plugin handler functions are called with all args and a callback function with the signature `(err?: Error) -> void`. The handler functions are called in order of registration.`callback` is called after all the handlers are called.
-This is also a commonly used pattern for events like `"emit"`, `"run"`.
-
-- __async waterfall__ The plugins will be applied asynchronously in the waterfall manner.
+插件处理函数以所有的args作为参数被调用，其回调函数的签名为`(err?: Error) -> void`。回调函数的执行与注册顺序一致。当所有的处理函数调用完成后，回调函数将被调用。这种插件在类似`"emit"`, `"run"`的事件中很常用。
+- __异步 瀑布流__ The plugins will be applied asynchronously in the waterfall manner.
 
 `applyPluginsAsyncWaterfall(name: string, init: any, callback: (err: Error, result: any) -> void)`
 
 The plugin handler functions are called with the current value and a callback function with the signature `(err: Error, nextValue: any) -> void.` When called `nextValue` is the current value for the next handler. The current value for the first handler is `init`. After all handlers are applied, callback is called with the last value. If any handler passes a value for `err`, the callback is called with this error and no more handlers are called.
 This plugin pattern is expected for events like `"before-resolve"` and `"after-resolve"`.
-
+插件处理以当前值为参数，回调签名为 `(err: Error, nextValue: any) -> void.`被调用时，`nextValue`是下一个处理函数的当前值。第一处理函数的当前值是`init`。当所有的处理函数使用后，回调函数以最后一个值为参数被调用。如果任何一个处理函数为`err`传值，回调函数以这个error为参被调用，后面的处理函数不再执行。
 - __async series__ It is the same as asynchronous but if any of the plugins registered fails, then no more plugins are called.
 
 `applyPluginsAsyncSeries(name: string, args: any..., callback: (err: Error, result: any) -> void)`
